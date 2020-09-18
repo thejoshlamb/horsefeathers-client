@@ -5,21 +5,23 @@ const urlRoot = process.env.NODE_ENV === "production" ? "https://horsefeathers-s
 console.log("my urlroot is ", urlRoot)
 
 function App() {
-  const [response, setResponse] = useState("")
+  const [gameState, setGameState] = useState({})
 
   useEffect(() => {
     const socket = socketIOClient(urlRoot)
-    socket.on("FromAPI", data => {
-      setResponse(data);
+    socket.on("state", data => {
+      console.log("got state", data)
+      setGameState(data);
     });
 
     return () => socket.disconnect()
   }, [])
 
   return (
-    <p>
-      It's <time dateTime={response}>{response}</time>
-    </p>
+    <div>
+      <pre>{JSON.stringify(gameState, null, 2)}</pre>
+      {/* There are {Object.keys(gameState.players).length} people here */}
+    </div>
   );
 }
 
